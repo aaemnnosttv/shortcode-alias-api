@@ -213,7 +213,72 @@ class ShortcodeAlias
 			return 'append';
 	}
 
+	function get( $prop )
+	{
+		return isset( $this->$prop )
+			? $this->$prop
+			: null;
+	}
+
 } // ShortcodeAlias
+
+
+class ShortcodeAliasFactory
+{
+	private static $instance;
+
+	private $aliases;
+
+	public static function instance()
+	{
+		if ( is_null( self::$instance ) )
+			self::$instance = new self();
+
+		return self::$instance;
+	}
+
+	private function __construct()
+	{
+		$this->aliases = array();
+	}
+
+	public function alias_exists( $tag )
+	{
+		return isset( $this->aliases[ $tag ] );
+	}
+
+	public function get_alias( $tag )
+	{
+		if ( $this->alias_exists( $tag ) )
+			return $this->aliases[ $tag ];
+		else
+			return false;
+	}
+
+	public function alias( $tag, $alias_of, $defaults = false )
+	{
+		$alias = new ShortcodeAlias( $tag, $alias_of, $defaults );
+		$this->aliases[ $tag ] = $alias;
+		return $alias;
+	}
+
+	public function revert( $tag )
+	{
+		global $shortcode_tags;
+
+		if ( $alias = $this->get_alias( $tag ) )
+		{
+			$alias_of = $alias->get('alias_of');
+			$callback = $alias->get('callback');
+			$shortcode_tags[ $alias_of ] = $callback;
+			unset( $this->aliases[ $tag ] );
+
+			return true;
+		}
+
+		return false;
+	}
+}
 
 /**
  * Register a NEW shortcode as an alias of another shortcode
@@ -249,5 +314,12 @@ class ShortcodeAlias
  */
 function add_shortcode_alias( $tag, $alias_of, $defaults = false )
 {
-	return new ShortcodeAlias( $tag, $alias_of, $defaults );
+	$alias = ShortcodeAliasFactory::instance()->alias( $tag, $alias_of, $defaults );
+	return $alias;
+}
+
+// restore original callback
+function remove_shortcode_alias( $tag )
+{
+	return ShortcodeAliasFactory::instance()->revert( $tag );
 }
