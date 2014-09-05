@@ -67,7 +67,7 @@ class ShortcodeAlias
 		$this->defaults = $defaults;
 		$this->callback = $shortcode_tags[ $alias_of ];
 
-		add_shortcode( $tag, array(&$this, 'alias_handler') );
+		add_shortcode( $tag, array($this, 'alias_handler') );
 	}
 
 	/**
