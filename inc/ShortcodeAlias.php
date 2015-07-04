@@ -127,7 +127,7 @@ class ShortcodeAlias
      */
     public function default_atts( $atts, $instance )
     {
-        if ( $instance !== $this || empty( $this->defaults['attrs'] ) ) return $atts;
+        if ( $instance !== $this || empty( $this->defaults['atts'] ) ) return $atts;
 
         foreach ( (array) $this->defaults['atts'] as $key => $default_value )
         {
