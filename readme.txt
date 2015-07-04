@@ -1,17 +1,17 @@
-=== Plugin Name ===
+=== Shortcode Alias API ===
 Stable tag: 0.1
 Contributors: aaemnnosttv
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LRA4JZYALHX82
 Tags: shortcode, shortcodes, shortcode aliases
 Requires at least: 2.9
-Tested up to: 4.1
-License: GPLv2 or later
+Tested up to: 4.2.2
+License: GPLv2
 
 A plugin for shortcode doppelgangery.
 
 == Description ==
 
-Inspired by the original functionality in [Post Link Shortcodes](http://wp.aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
+Inspired by the original functionality in [Post Link Shortcodes](http://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
 
 
 == Contribute ==
