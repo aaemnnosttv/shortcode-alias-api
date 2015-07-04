@@ -63,3 +63,18 @@ function remove_shortcode_alias( $tag )
 {
     return ShortcodeAliasFactory()->revert( $tag );
 }
+
+/**
+ * Test whether or not a given shortcode tag is an alias
+ *
+ * @param $tag
+ *
+ * @return bool
+ */
+function is_shortcode_alias( $tag )
+{
+    global $shortcode_tags;
+    return ! empty( $shortcode_tags[ $tag ][ 0 ] )
+           && $shortcode_tags[ $tag ][ 0 ] instanceof ShortcodeAlias;
+}
+
