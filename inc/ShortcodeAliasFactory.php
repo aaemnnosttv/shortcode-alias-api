@@ -37,9 +37,12 @@ class ShortcodeAliasFactory
             'atts' => array(),
             'content' => ''
         ) );
+
         $alias = new ShortcodeAlias( $tag, $alias_of, $defaults );
         $alias->init();
-        $this->aliases[ $tag ][ ] = $alias;
+
+        array_push( $this->aliases[ $tag ], $alias );
+
         return $alias;
     }
 
