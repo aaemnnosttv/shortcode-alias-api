@@ -173,6 +173,7 @@ class ShortcodeAlias
         // complex default
 
         $default_value = wp_parse_args( $default_value, array(
+            'default'  => '',
             'prepend'  => '',
             'append'   => '',
         ) );
@@ -180,6 +181,10 @@ class ShortcodeAlias
         // override shortcode-passed value completely
         if ( isset( $default_value['override'] ) ) {
             return $default_value['override'];
+        }
+
+        if ( is_null( $current_value ) ) {
+            $current_value = $default_value['default'];
         }
 
         if ( $default_value['prepend'] ) {
