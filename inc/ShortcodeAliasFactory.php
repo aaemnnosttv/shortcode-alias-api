@@ -3,7 +3,7 @@
 
 class ShortcodeAliasFactory
 {
-    private $aliases = array();
+    protected $aliases = array();
 
     /**
      * @param $tag
@@ -11,19 +11,16 @@ class ShortcodeAliasFactory
      */
     public function alias_exists( $tag )
     {
-        return isset( $this->aliases[ $tag ] );
+        return (bool) end( $this->aliases[ $tag ] );
     }
 
     /**
      * @param $tag
-     * @return bool
+     * @return ShortcodeAlias|bool
      */
     public function get_alias( $tag )
     {
-        if ( $this->alias_exists( $tag ) )
-            return $this->aliases[ $tag ];
-        else
-            return false;
+        return end( $this->aliases[ $tag ] );
     }
 
     /**
@@ -31,31 +28,42 @@ class ShortcodeAliasFactory
      *
      * @param $tag
      * @param $alias_of
-     * @param bool|false $defaults
+     * @param array|bool|false $defaults
      * @return ShortcodeAlias
      */
-    public function alias( $tag, $alias_of, $defaults = false )
+    public function alias( $tag, $alias_of, $defaults = array() )
     {
+        $defaults = wp_parse_args( $defaults, array(
+            'atts' => array(),
+            'content' => ''
+        ) );
         $alias = new ShortcodeAlias( $tag, $alias_of, $defaults );
-        $this->aliases[ $tag ] = $alias;
+        $alias->init();
+        $this->aliases[ $tag ][ ] = $alias;
         return $alias;
     }
 
     /**
-     * Remove the aliased shortcode and restore to original if there was one
+     * Reset the aliased shortcode's callback to the next alias in the stack,
+     * or if none, remove the aliased shortcode and restore the target callback
      * @param $tag
      * @return bool
      */
     public function revert( $tag )
     {
-        global $shortcode_tags;
+        if ( ! $alias = array_pop( $this->aliases[ $tag ] ) ) return false;
 
-        if ( ! $alias = $this->get_alias( $tag ) ) return false;
+        // see if we have another alias in the stack for the same tag
+        if ( $this->alias_exists( $tag ) )
+        {
+            $alias = $this->get_alias();
+            $alias->init();
+            return true;
+        }
 
-        $alias_of = $alias->get('alias_of');
-        $callback = $alias->get('callback');
-        $shortcode_tags[ $alias_of ] = $callback;
-        unset( $this->aliases[ $tag ] );
+        // reset the target shortcode's callback
+        add_shortcode( $alias->alias_of, $alias->callback );
+        remove_shortcode( $tag );
 
         return true;
     }

@@ -24,12 +24,6 @@ class ShortcodeAlias
     protected $defaults;
 
     /**
-     * Alias callback data
-     * @var (array)
-     */
-    protected $args;
-
-    /**
      * Original alias callback attributes & content
      * @var (array)
      */
@@ -42,6 +36,12 @@ class ShortcodeAlias
     protected $atts;
 
     /**
+     * Shortcode content
+     * @var string
+     */
+    protected $content;
+
+    /**
      * Target shortcode callback
      * @var (string|array)
      */
@@ -49,16 +49,25 @@ class ShortcodeAlias
 
 
 
-    function __construct( $tag, $alias_of, $defaults = false )
+    public function __construct( $tag, $alias_of, $defaults = array() )
     {
         global $shortcode_tags;
 
         $this->tag      = $tag;
         $this->alias_of = $alias_of;
-        $this->defaults = $defaults;
+        $this->defaults = (array) $defaults;
         $this->callback = $shortcode_tags[ $alias_of ];
+    }
 
-        add_shortcode( $tag, array($this, 'alias_handler') );
+	/**
+     * Initialize the alias
+     */
+    public function init()
+    {
+        add_shortcode( $this->tag, array($this, 'shortcode_handler') );
+
+        add_filter( "shortcode_alias/$this->tag/atts", array($this, 'default_atts'), 10, 2 );
+        add_filter( "shortcode_alias/$this->tag/content", array($this, 'default_content'), 10, 2 );
     }
 
     /**
@@ -71,21 +80,22 @@ class ShortcodeAlias
      * @param  (string)            $content alias enclosed content
      * @return target
      */
-    function alias_handler( $atts, $content )
+    public function shortcode_handler( $atts, $content )
     {
-        $this->atts = $atts;
-        $args = compact('atts','content');
-        $this->origin = $args;
+        $this->origin = compact('atts','content');
 
         /**
-         * filter	'shortcode_alias/{tag}/args'
-         * @since	0.1
-         * @param	(array)	alias shortcode atts & content
+         * @filter 'shortcode_alias/{tag}/atts'
+         * @param $atts
          */
-        $this->args = apply_filters( "shortcode_alias/{$this->tag}/args", $args );
+        $this->atts = (array) apply_filters( "shortcode_alias/$this->tag/atts", $atts, $this );
 
-        if ( is_array( $this->defaults ) && $this->defaults )
-            $this->apply_defaults();
+        /**
+         * @filter 'shortcode_alias/{tag}/content'
+         * @param $content
+         */
+        $this->content = apply_filters( "shortcode_alias/$this->tag/content", $content, $this );
+
 
         return $this->call();
     }
@@ -96,119 +106,97 @@ class ShortcodeAlias
      */
     protected function call()
     {
-        $content = $this->atts['__content'];
-        unset( $this->atts['__content'] );
+        $output = call_user_func( $this->callback, $this->atts, $this->content, $this->alias_of );
 
-        /**
-         * filter	'shortcode_alias/{tag}/wrap'
-         * @since	0.1
-         * @param	(array)
-         */
-        $wrap = apply_filters( "shortcode_alias/{$this->tag}/wrap", array(
-            'before' => '',
-            'after'  => ''
-        ) );
-        extract( $wrap );
-        // $before
-        // $after
-
-        $output = call_user_func( $this->callback, $this->atts, $content, $this->alias_of );
         /**
          * filter	'shortcode_alias/{tag}/output'
          * @since	0.1
          * @param	(mixed)	$output	shortcode callback returned output - probably string
+         * @param   ShortcodeAlias
          */
-        $output = apply_filters( "shortcode_alias/{$this->tag}/output", $output );
-
-        return $before . $output . $after;
+        return apply_filters( "shortcode_alias/{$this->tag}/output", $output, $this );
     }
 
-    /**
+	/**
+     * Filter callback for applying the registered default attributes
      *
+     * @param $atts
+     * @param $instance
+     *
+     * @return mixed
      */
-    protected function apply_defaults()
+    public function default_atts( $atts, $instance )
     {
-        extract( $this->args );
-        // $atts
-        // $content
+        if ( $instance !== $this || empty( $this->defaults['attrs'] ) ) return $atts;
 
-        // will be '' if no atts were matched in shortcode tag
-        if ( ! is_array( $atts ) )
-            $atts = array();
-
-        /**
-         * Enclosed shortcode content handling
-         */
-        $atts['__content'] = $content;
-        // now enclosed content can be modified the same way
-        // this will be passed as $content to the target callback
-
-
-        /**
-         * Default/atts handling
-         * Iterate through default settings and merge with passed atts
-         */
-        foreach ( $this->defaults as $dkey => $default )
+        foreach ( (array) $this->defaults['atts'] as $key => $default_value )
         {
-            $mod = $this->get_key_mod( $dkey );
-
-            // default is flagged to override any passed value
-            if ( 'force_default' == $mod )
-            {
-                $key = ltrim( $dkey, '!' );
-                $atts[ $key ] = $default;
-                continue;
-            }
-
-            $key = trim( $dkey, '+' );
-
-            if ( isset( $atts[ $key ] ) && $mod )
-            {
-                $atts[ $key ] = ( 'prepend' == $mod )
-                    ? "{$default}{$atts[$key]}"
-                    : "{$atts[$key]}{$default}";
-            }
-            elseif ( isset( $atts[ $key ] ) )
-            {
-                // the key is not set to prepend/append the default
-                // and the shortcode passed its own value
-                // use the passed value
-                continue;
-            }
-            else
-                $atts[ $key ] = $default;
+            $current_value = isset( $atts[ $key ] ) ? $atts[ $key ] : null;
+            $atts[ $key ] = $this->apply_default( $current_value, $default_value );
         }
 
-        $this->atts = $atts;
+        return $atts;
+    }
+
+	/**
+     * Filter callback for applying the registered default content
+     *
+     * @param $content
+     * @param $instance
+     *
+     * @return mixed
+     */
+    public function default_content( $content, $instance )
+    {
+        if ( $instance !== $this ) return $content;
+
+        return $this->apply_default( $content, $this->defaults['content'] );
     }
 
     /**
-     * Prepend/Append att key test
-     * @param  (string)    $a        attribute array key
-     * @return bool|string (string|bool)    string placement if detected, bool false otherwise
+     * @param $current_value
+     * @param $default_value
+     *
+     * @return mixed
      */
-    function get_key_mod( $a )
+    protected function apply_default( $current_value, $default_value )
     {
-        if ( 0 === strpos( $a, '!' ) )
-            return 'force_default';
+        // simple default
 
-        $len = strlen( $a );
+        if ( ! is_array( $default_value ) )
+        {
+            return is_null( $current_value )
+                ? $default_value
+                : $current_value;
+        }
 
-        // check for a difference on either side
-        if ( strlen( trim( $a, '+' ) ) === $len )
-            return false;
+        // complex default
 
-        if ( strlen( ltrim( $a, '+' ) ) !== $len )
-            return 'prepend';
-        else
-            return 'append';
+        $default_value = wp_parse_args( $default_value, array(
+            'prepend'  => '',
+            'append'   => '',
+        ) );
+
+        // override shortcode-passed value completely
+        if ( isset( $default_value['override'] ) ) {
+            return $default_value['override'];
+        }
+
+        if ( $default_value['prepend'] ) {
+            $current_value = $default_value['prepend'] . $current_value;
+        }
+
+        if ( $default_value['append'] ) {
+            $current_value .= $default_value['append'];
+        }
+
+        return $current_value;
     }
 
-    function get( $prop )
+    function __get( $prop )
     {
         return isset( $this->$prop )
             ? $this->$prop
             : null;
     }
-
 }
