@@ -56,6 +56,9 @@ class ShortcodeAliasFactory
     {
         if ( ! $alias = array_pop( $this->aliases[ $tag ] ) ) return false;
 
+        // reset the target shortcode's callback
+        add_shortcode( $alias->alias_of, $alias->callback );
+
         // see if we have another alias in the stack for the same tag
         if ( $this->alias_exists( $tag ) )
         {
@@ -64,8 +67,6 @@ class ShortcodeAliasFactory
             return true;
         }
 
-        // reset the target shortcode's callback
-        add_shortcode( $alias->alias_of, $alias->callback );
         remove_shortcode( $tag );
 
         return true;
