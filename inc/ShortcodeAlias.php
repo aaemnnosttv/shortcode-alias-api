@@ -150,6 +150,8 @@ class ShortcodeAlias
     {
         if ( $instance !== $this ) return $content;
 
+        if ( $content === '' ) $content = null;
+
         return $this->apply_default( $content, $this->defaults['content'] );
     }
 
