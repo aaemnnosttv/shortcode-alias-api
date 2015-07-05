@@ -59,7 +59,7 @@ class ShortcodeAlias
         $this->callback = $shortcode_tags[ $alias_of ];
     }
 
-	/**
+    /**
      * Initialize the alias
      */
     public function init()
@@ -117,7 +117,7 @@ class ShortcodeAlias
         return apply_filters( "shortcode_alias/{$this->tag}/output", $output, $this );
     }
 
-	/**
+    /**
      * Filter callback for applying the registered default attributes
      *
      * @param $atts
@@ -138,7 +138,7 @@ class ShortcodeAlias
         return $atts;
     }
 
-	/**
+    /**
      * Filter callback for applying the registered default content
      *
      * @param $content
