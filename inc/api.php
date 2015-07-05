@@ -55,13 +55,34 @@ function add_shortcode_alias( $tag, $alias_of, $defaults = false )
 }
 
 /**
- * Remove the alias and restore the previous callback if replaced with an alias
+ * Remove all aliases for the given tag and restore the original callback if replaced with an alias
  * @param $tag
  * @return bool
  */
 function remove_shortcode_alias( $tag )
 {
+    return ShortcodeAliasFactory()->revert( $tag, true );
+}
+
+/**
+ * Revert the last alias on the given tag
+ *
+ * @param $tag
+ *
+ * @return bool
+ */
+function revert_shortcode_alias( $tag )
+{
     return ShortcodeAliasFactory()->revert( $tag );
+}
+
+
+/**
+ * Revert and remove all shortcode aliases
+ */
+function remove_all_shortcode_aliases()
+{
+    ShortcodeAliasFactory()->revert_all();
 }
 
 /**
