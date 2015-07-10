@@ -13,7 +13,7 @@ A plugin for shortcode doppelgangery.
 
 Inspired by the original functionality in [Post Link Shortcodes](http://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
 
-* This plugin is still in alpha and not ready for use in production environments! *
+**This plugin is still in alpha and not ready for use in production environments!**
 
 ## Contribute ##
 
