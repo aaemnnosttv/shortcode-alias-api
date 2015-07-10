@@ -18,34 +18,27 @@ function ShortcodeAliasFactory()
 /**
  * Register a NEW shortcode as an alias of another shortcode
  *
- * Optionally define default values for attributes &/or prepend/append them
+ * Optionally define default values for attributes &/or prepend/append
  * to the attributes passed by the shortcode!
- *
- * Note: function arguments differ from add_shortcode! (with the exception of the first)
  *
  * @param  string $tag name of shortcode to add
  * @param  string $alias_of tag of shortcode to "connect" to
- * @param  mixed $defaults array of default attributes => values
+ * @param  mixed $defaults array of default values
+ *                   eg:
+ *                         array(
+ *                             'atts' => array(
+ *                                 'attribute' => 'default value',
+ *                                     // or
+ *                                 'attribute' => array(
+ *                                     'default'  => 'default value',
+ *                                     'prepend'  => 'Always prepend with this before the passed value ',
+ *                                     'append'   => 'Always append with this after the passed value ',
+ *                                     'override' => 'Always override the passed value with this'
+ *                                 )
+ *                             ),
+ *                             'content' => 'default content for an enclosed shortcode'
+ *                         )
  *
- * prepend / append
- * these are always applied as they are additive
- * The `+` denotes where the default value will be relative to the
- * shortcode-passed value.
- * E.g.:
- * `+content` (prepend)
- * `content+` (append)
- *
- * prepend a value:
- * +class => 'someclass ' with a shortcode that passes class="myclass"
- * will produce an html class attribute class="someclass myclass"
- *
- * append a value:
- * class+ => ' someclass' with a shortcode that passes class="myclass"
- * will produce an html class attribute class="myclass someclass"
- *
- * Defaults (no prepend/append):
- * defined values that are added if there is no existing value for the attribute
- * passed shortcode values will override defined defaults completely
  *
  * @return ShortcodeAlias
  */
