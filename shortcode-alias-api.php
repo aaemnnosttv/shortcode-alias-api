@@ -2,7 +2,7 @@
 /*
     Plugin Name: Shortcode Alias API
     Description: A plugin for shortcode awesomeness
-    Version: 0.1
+    Version: 0.1-alpha
     Author: Evan Mattson
     Author URI: http://aaemnnost.tv
     Plugin URI: https://github.com/aaemnnosttv/shortcode-alias-api
