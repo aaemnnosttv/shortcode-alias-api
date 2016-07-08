@@ -1,0 +1,13 @@
+{
+    "name": "aaemnnosttv/shortcode-alias-api",
+    "description": "A plugin for shortcode doppelgangery.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Evan Mattson",
+            "email": "me@aaemnnost.tv"
+        }
+    ],
+    "require": {}
+}
