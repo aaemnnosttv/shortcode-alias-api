@@ -1,21 +1,14 @@
-# Shortcode Alias API #
-**Stable tag:** trunk  
-**Contributors:** aaemnnosttv  
-**Donate link:** https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LRA4JZYALHX82  
-**Tags:** shortcode, shortcodes, shortcode aliases  
-**Requires at least:** 2.9  
-**Tested up to:** 4.2.2  
-**License:** GPLv2  
+# Shortcode Alias API
+
+[![Travis branch](https://img.shields.io/travis/aaemnnosttv/shortcode-alias-api/master.svg?maxAge=2592000)](https://github.com/aaemnnosttv/shortcode-alias-api)
 
 A plugin for shortcode doppelgangery.
 
-## Description ##
+## Description
 
-Inspired by the original functionality in [Post Link Shortcodes](http://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
+Inspired by the original functionality in [Post Link Shortcodes](https://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to register powerful enhanced versions of any existing shortcode.
 
-**This plugin is still in alpha and not ready for use in production environments!**
-
-## Contribute ##
+## Contribute
 
 [Shortcode Alias API on GitHub!](https://github.com/aaemnnosttv/shortcode-alias-api)
 

@@ -4,16 +4,14 @@ Contributors: aaemnnosttv
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LRA4JZYALHX82
 Tags: shortcode, shortcodes, shortcode aliases
 Requires at least: 2.9
-Tested up to: 4.4
+Tested up to: 4.5.3
 License: GPLv2
 
 A plugin for shortcode doppelgangery.
 
 == Description ==
 
-Inspired by the original functionality in [Post Link Shortcodes](http://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
-
-**This plugin is still in alpha and not ready for use in production environments!**
+Inspired by the original functionality in [Post Link Shortcodes](https://aaemnnost.tv/2013/10/04/aliases-post-link-shortcodes-0-3/), this plugin allows developers to create powerful enhanced versions of any existing shortcode.
 
 == Contribute ==
 
