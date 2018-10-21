@@ -88,7 +88,7 @@ class ShortcodeAlias
          * @filter 'shortcode_alias/{tag}/atts'
          * @param $atts
          */
-        $this->atts = (array) apply_filters( "shortcode_alias/$this->tag/atts", $atts, $this );
+        $this->atts = (array) apply_filters( "shortcode_alias/$this->tag/atts", (array) $atts, $this );
 
         /**
          * @filter 'shortcode_alias/{tag}/content'
