@@ -1,3 +1,5 @@
 .svn
 /build/logs
 /vendor
+/wordpress
+/composer.lock

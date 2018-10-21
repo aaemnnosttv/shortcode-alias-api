@@ -1,25 +1,22 @@
 <?php
-/**
- * PHPUnit bootstrap file
- *
- * @package shortcode-alias-api
- */
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-if ( ! $_tests_dir ) {
-	$_tests_dir = '/tmp/wordpress-tests-lib';
+// Composer autoloader must be loaded before WP_PHPUNIT__DIR will be available
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+
+/**
+ * If PHPUnit is run from a different working directory, the relative path to our tests config file
+ * will not exist. This corrects that by updating it with an absolute path if necessary.
+ */
+if (! file_exists(getenv('WP_PHPUNIT__TESTS_CONFIG'))) {
+    putenv(sprintf('WP_PHPUNIT__TESTS_CONFIG=%s/%s', dirname(__DIR__), getenv('WP_PHPUNIT__TESTS_CONFIG')));
 }
 
 // Give access to tests_add_filter() function.
-require_once $_tests_dir . '/includes/functions.php';
+require_once getenv( 'WP_PHPUNIT__DIR' ) . '/includes/functions.php';
 
-/**
- * Manually load the plugin being tested.
- */
-function _manually_load_plugin() {
-	require dirname( dirname( __FILE__ ) ) . '/shortcode-alias-api.php';
-}
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'muplugins_loaded', function() {
+    require dirname( dirname( __FILE__ ) ) . '/shortcode-alias-api.php';
+} );
 
 // Start up the WP testing environment.
-require $_tests_dir . '/includes/bootstrap.php';
+require getenv( 'WP_PHPUNIT__DIR' ) . '/includes/bootstrap.php';
